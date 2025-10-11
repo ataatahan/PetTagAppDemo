@@ -1,0 +1,50 @@
+﻿@{
+    ViewData["Title"] = "Pet Sahipleri";
+}
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">Yeni Owner Ekle</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>İsim</th>
+            <th>Email</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var o in Model)
+    {
+        <tr>
+            <td>@o.Id</td>
+            <td>@o.FullName</td>
+            <td>@o.Email</td>
+            <td>
+                <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@o.Id">Detay</a>
+                <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@o.Id">Düzenle</a>
+
+                <form method="post" asp-action="Delete" asp-route-id="@o.Id" style="display:inline;">
+                    <input type="hidden" name="id" value="@o.Id" />
+                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Gerçekten silinsin mi?');">Sil</button>
+                    @Html.AntiForgeryToken()
+                </form>
+
+                <form method="post" asp-action="SoftDelete" asp-route-id="@o.Id" style="display:inline;">
+                    <input type="hidden" name="id" value="@o.Id" />
+                    <button type="submit" class="btn btn-sm btn-secondary">Soft Delete</button>
+                    @Html.AntiForgeryToken()
+                </form>
+
+                <form method="post" asp-action="UndoDelete" asp-route-id="@o.Id" style="display:inline;">
+                    <input type="hidden" name="id" value="@o.Id" />
+                    <button type="submit" class="btn btn-sm btn-success">Undo</button>
+                    @Html.AntiForgeryToken()
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
