@@ -8,8 +8,10 @@
 
 * ✅ Katmanlı mimari: `Core`, `Repo`, `Service`, `ConsoleDemo`
 * 🧾 Zengin domain modelleri: Pet, PetOwner, HealthRecord, VetAppointment, PetChip vb.
-* 🔧 Validation ve özel istisna yapıları
-* ♻️ UnitOfWork ve repository pattern desteği
+* 🧩 **SOLID prensiplerine uygun** olarak geliştirilmiş mimari yapı
+* ⚙️ Repository Pattern ve Unit of Work kullanımı
+* 🔧 Validation, özel exception yapıları ve temiz kod prensipleri
+* ♻️ Esnek ve test edilebilir yapı (Dependency Injection destekli)
 
 ---
 
@@ -52,6 +54,22 @@ PetTag.ConsoleDemo/        # Konsol uygulaması demo (Program.cs)
 
 ---
 
+## 🧱 Yazılım Mimarisi
+
+Bu proje **katmanlı mimari** yapısına sahiptir ve **SOLID prensipleri** gözetilerek tasarlanmıştır:
+
+### ⚙️ SOLID İlkeleri
+
+* **S (Single Responsibility Principle):** Her sınıf tek bir sorumluluğa sahiptir. Örneğin, `PetService` yalnızca evcil hayvan işlemlerini yönetir.
+* **O (Open/Closed Principle):** Sınıflar genişletmeye açık, değişikliğe kapalı olacak şekilde tasarlanmıştır.
+* **L (Liskov Substitution Principle):** Base sınıflar, türetilmiş sınıflarla sorunsuz şekilde değiştirilebilir.
+* **I (Interface Segregation Principle):** Arayüzler küçük ve özelleşmiş tutulmuştur. Her servis kendi görevine uygun arayüzleri uygular.
+* **D (Dependency Inversion Principle):** Üst seviye modüller, alt seviye modüllere değil, soyutlamalara bağımlıdır.
+
+> Ayrıca proje genelinde **Dependency Injection**, **Repository Pattern** ve **UnitOfWork** kullanılarak bağımlılıklar yönetilebilir ve test edilebilir bir yapı sağlanmıştır.
+
+---
+
 ## 🚀 Hızlı Başlangıç (Geliştirici)
 
 **Gereksinimler**
@@ -83,6 +101,7 @@ dotnet run
 * Katmanlar arasında **DTO** kullanımı tercih edilir (Entity => DTO => Service).
 * `UnitOfWork` ve `Repository` pattern'i ile transaction kontrolü sağlanır.
 * Validation için özel `ValidationCheck` ve `CheckValueException` sınıfları kullanılmış.
+* Temiz kod prensipleri ve sürdürülebilirlik ön planda tutulmuştur.
 
 ---
 
@@ -113,13 +132,7 @@ Bu proje bir ekip çalışmasıdır. 💪
 * 👨‍💻 **Efe İkan**
 * 👨‍💻 **Mert Sarıel**
 
-> Ekip olarak PetTag uygulamasını birlikte geliştirdik; tasarım, veri modeli ve katmanlı mimari ortak bir plan doğrultusunda oluşturulmuştur.
-
----
-
-## 🧾 Lisans
-
-Bu proje MIT lisansı ile lisanslanmıştır. (LICENSE dosyası ekleyin.)
+> Ekip olarak PetTag uygulamasını birlikte geliştirdik; tasarım, veri modeli, SOLID prensipleri ve katmanlı mimari ortak bir plan doğrultusunda oluşturulmuştur.
 
 ---
 
@@ -128,9 +141,3 @@ Bu proje MIT lisansı ile lisanslanmıştır. (LICENSE dosyası ekleyin.)
 Herhangi bir sorunuz veya öneriniz olursa `ata.han.ata@outlook.com` üzerinden bana ulaşabilirsiniz.
 
 ---
-
-### 💡 İpuçları / Geliştirme Fikirleri
-
-* RESTful API ekleyip `PetTag.Service` katmanını bir Web API ile expose edebilirsiniz.
-* Unit testler ekleyin (xUnit / NUnit) — `Service` ve `Repo` katmanları için mock'lar kullanın.
-* Docker ile veritabanı ve uygulama container'ları oluşturun.
