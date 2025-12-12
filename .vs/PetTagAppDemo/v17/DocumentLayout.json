@@ -39,7 +39,7 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "PetTag.Core",
+              "Title": "PetTag.Core.csproj",
               "DocumentMoniker": "C:\\Users\\ataha\\Desktop\\GitHub\\PetTagAppDemo\\PetTagApp\\PetTag.Core.csproj",
               "RelativeDocumentMoniker": "PetTagApp\\PetTag.Core.csproj",
               "ToolTip": "C:\\Users\\ataha\\Desktop\\GitHub\\PetTagAppDemo\\PetTagApp\\PetTag.Core.csproj",
@@ -59,8 +59,7 @@
               "RelativeToolTip": "PetTag\\Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-12T21:38:36.299Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-12T21:38:36.299Z"
             },
             {
               "$type": "Document",
@@ -72,8 +71,7 @@
               "RelativeToolTip": "PetTag\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-12-12T21:33:17.583Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-12T21:33:17.583Z"
             }
           ]
         },
