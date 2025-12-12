@@ -138,6 +138,6 @@ Bu proje bir ekip çalışmasıdır. 💪
 
 ## ✉️ İletişim
 
-Herhangi bir sorunuz veya öneriniz olursa `ata.han.ata@outlook.com` üzerinden bana ulaşabilirsiniz.
+Herhangi bir sorunuz veya öneriniz olursa "ata.han.ata@outlook.com" üzerinden bana ulaşabilirsiniz.
 
 ---
