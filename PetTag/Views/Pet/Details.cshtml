@@ -1,0 +1,294 @@
+@model PetTag.Service.DTOs.PetDetailDto
+@{
+    ViewData["Title"] = "Evcil Hayvan Detayları";
+    var appointments = ViewBag.Appointments as IList<PetTag.Service.DTOs.VetAppointmentListItemDto> ?? new List<PetTag.Service.DTOs.VetAppointmentListItemDto>();
+    var healthRecords = ViewBag.HealthRecords as IList<PetTag.Service.DTOs.HealtRecordListItemDto> ?? new List<PetTag.Service.DTOs.HealtRecordListItemDto>();
+    var alerts = ViewBag.Alerts as IList<PetTag.Service.DTOs.AlertListItemDto> ?? new List<PetTag.Service.DTOs.AlertListItemDto>();
+    var activityLogs = ViewBag.ActivityLogs as IList<PetTag.Service.DTOs.ActivityLogListItemDto> ?? new List<PetTag.Service.DTOs.ActivityLogListItemDto>();
+    var petChip = ViewBag.PetChip as PetTag.Service.DTOs.PetChipDetailDto?;
+    var totalAppointments = ViewBag.TotalAppointments as int? ?? 0;
+    var totalHealthRecords = ViewBag.TotalHealthRecords as int? ?? 0;
+    var totalAlerts = ViewBag.TotalAlerts as int? ?? 0;
+    var totalActivityLogs = ViewBag.TotalActivityLogs as int? ?? 0;
+}
+
+<div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+        <h1><i class="bi bi-heart"></i> @Model.Name - Detayları</h1>
+        <p class="text-muted mb-0">@Model.Type | @Model.Age yaşında</p>
+    </div>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+            <i class="bi bi-pencil"></i> Düzenle
+        </a>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Geri
+        </a>
+    </div>
+</div>
+
+<!-- İstatistik Kartları -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="stat-card">
+            <div class="stat-value">@totalAppointments</div>
+            <div class="stat-label"><i class="bi bi-calendar-check"></i> Randevu</div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card">
+            <div class="stat-value">@totalHealthRecords</div>
+            <div class="stat-label"><i class="bi bi-file-medical"></i> Sağlık Kaydı</div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card">
+            <div class="stat-value">@totalAlerts</div>
+            <div class="stat-label"><i class="bi bi-bell"></i> Uyarı</div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card">
+            <div class="stat-value">@totalActivityLogs</div>
+            <div class="stat-label"><i class="bi bi-activity"></i> Aktivite Logu</div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Sol Kolon: Temel Bilgiler ve Chip -->
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-info-circle"></i> Temel Bilgiler</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">Id:</dt>
+                    <dd class="col-sm-7">@Model.Id</dd>
+
+                    <dt class="col-sm-5">İsim:</dt>
+                    <dd class="col-sm-7"><strong>@Model.Name</strong></dd>
+
+                    <dt class="col-sm-5">Tür:</dt>
+                    <dd class="col-sm-7"><span class="badge bg-info">@Model.Type</span></dd>
+
+                    <dt class="col-sm-5">Yaş:</dt>
+                    <dd class="col-sm-7">@Model.Age yaşında</dd>
+
+                    <dt class="col-sm-5">Kilo:</dt>
+                    <dd class="col-sm-7">@(Model.Weight?.ToString("F2") ?? "-") kg</dd>
+
+                    <dt class="col-sm-5">Pet Sahibi:</dt>
+                    <dd class="col-sm-7">
+                        <a asp-controller="PetOwner" asp-action="Details" asp-route-id="@Model.PetOwnerId" class="text-decoration-none">
+                            ID: @Model.PetOwnerId <i class="bi bi-box-arrow-up-right"></i>
+                        </a>
+                    </dd>
+
+                    <dt class="col-sm-5">Veteriner:</dt>
+                    <dd class="col-sm-7">
+                        <a asp-controller="Vet" asp-action="Details" asp-route-id="@Model.VetId" class="text-decoration-none">
+                            ID: @Model.VetId <i class="bi bi-box-arrow-up-right"></i>
+                        </a>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+
+        @if (petChip.HasValue)
+        {
+            <div class="card mt-3">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-shield-check"></i> Chip Bilgileri</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5">Chip No:</dt>
+                        <dd class="col-sm-7"><code>@petChip.Value.ChipNumber</code></dd>
+
+                        <dt class="col-sm-5">Durum:</dt>
+                        <dd class="col-sm-7"><span class="badge bg-success">@petChip.Value.ChipStatus</span></dd>
+
+                        @if (petChip.Value.LastLatitude.HasValue && petChip.Value.LastLongitude.HasValue)
+                        {
+                            <dt class="col-sm-5">Son Konum:</dt>
+                            <dd class="col-sm-7">
+                                @petChip.Value.LastLatitude.Value.ToString("F6"), @petChip.Value.LastLongitude.Value.ToString("F6")
+                            </dd>
+                        }
+                    </dl>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="card mt-3">
+                <div class="card-body text-center">
+                    <i class="bi bi-shield-x" style="font-size: 3rem; color: #6c757d;"></i>
+                    <p class="mt-2 mb-0">Chip kaydı bulunmamaktadır</p>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Sağ Kolon: İlgili Kayıtlar -->
+    <div class="col-md-8">
+        <div class="row">
+            <!-- Randevular -->
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-calendar-check"></i> Son Randevular</h5>
+                        @if (totalAppointments > 5)
+                        {
+                            <small class="text-white">Toplam: @totalAppointments</small>
+                        }
+                    </div>
+                    <div class="card-body">
+                        @if (appointments.Any())
+                        {
+                            <div class="list-group list-group-flush">
+                                @foreach (var apt in appointments)
+                                {
+                                    <div class="list-group-item px-0">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <strong>@apt.AppointmentDate.ToString("dd.MM.yyyy HH:mm")</strong>
+                                                @if (!string.IsNullOrEmpty(apt.Notes))
+                                                {
+                                                    <br><small class="text-muted">@apt.Notes</small>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0 text-center">Henüz randevu kaydı yok</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sağlık Kayıtları -->
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-file-medical"></i> Son Sağlık Kayıtları</h5>
+                        @if (totalHealthRecords > 5)
+                        {
+                            <small class="text-white">Toplam: @totalHealthRecords</small>
+                        }
+                    </div>
+                    <div class="card-body">
+                        @if (healthRecords.Any())
+                        {
+                            <div class="list-group list-group-flush">
+                                @foreach (var hr in healthRecords)
+                                {
+                                    <div class="list-group-item px-0">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <strong>@hr.RecordDate.ToString("dd.MM.yyyy")</strong>
+                                                @if (hr.IsVaccination)
+                                                {
+                                                    <span class="badge bg-success ms-2">Aşı</span>
+                                                }
+                                                <br><small class="text-muted">@hr.Description</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0 text-center">Henüz sağlık kaydı yok</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Uyarılar -->
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-bell"></i> Son Uyarılar</h5>
+                        @if (totalAlerts > 5)
+                        {
+                            <small class="text-white">Toplam: @totalAlerts</small>
+                        }
+                    </div>
+                    <div class="card-body">
+                        @if (alerts.Any())
+                        {
+                            <div class="list-group list-group-flush">
+                                @foreach (var alert in alerts)
+                                {
+                                    <div class="list-group-item px-0">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <strong>@alert.AlertDate.ToString("dd.MM.yyyy HH:mm")</strong>
+                                                @if (alert.AlertType.HasValue)
+                                                {
+                                                    <span class="badge bg-warning ms-2">@alert.AlertType</span>
+                                                }
+                                                <br><small class="text-muted">@alert.Message</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0 text-center">Henüz uyarı yok</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aktivite Logları -->
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-activity"></i> Son Aktivite Logları</h5>
+                        @if (totalActivityLogs > 5)
+                        {
+                            <small class="text-white">Toplam: @totalActivityLogs</small>
+                        }
+                    </div>
+                    <div class="card-body">
+                        @if (activityLogs.Any())
+                        {
+                            <div class="list-group list-group-flush">
+                                @foreach (var log in activityLogs)
+                                {
+                                    <div class="list-group-item px-0">
+                                        <div>
+                                            <strong>@log.LogDate.ToString("dd.MM.yyyy HH:mm")</strong>
+                                            <br>
+                                            <small class="text-muted">
+                                                @if (log.WalkingMinutes.HasValue) { <span>Yürüme: @log.WalkingMinutes.Value.ToString("F1") dk</span> }
+                                                @if (log.RunningMinutes.HasValue) { <span>| Koşma: @log.RunningMinutes.Value.ToString("F1") dk</span> }
+                                                @if (log.Temperature.HasValue) { <span>| Sıcaklık: @log.Temperature.Value.ToString("F1")°C</span> }
+                                            </small>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0 text-center">Henüz aktivite logu yok</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

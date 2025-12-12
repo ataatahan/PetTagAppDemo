@@ -1,0 +1,112 @@
+@model IList<PetTag.Service.DTOs.PetListItemDto>
+@{
+    ViewData["Title"] = "Evcil Hayvanlar";
+}
+
+<div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+        <h1><i class="bi bi-heart"></i> Evcil Hayvanlar</h1>
+        <p class="text-muted mb-0">Tüm evcil hayvanları görüntüleyin ve yönetin</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-heart-fill"></i> Yeni Evcil Hayvan Ekle
+    </a>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle"></i> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle"></i> @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>İsim</th>
+                        <th>Tür</th>
+                        <th>Yaş</th>
+                        <th>Kilo</th>
+                        <th>Chip</th>
+                        <th class="text-end">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var pet in Model)
+                        {
+                            <tr>
+                                <td>@pet.Id</td>
+                                <td><strong>@pet.Name</strong></td>
+                                <td><span class="badge bg-info">@pet.Type</span></td>
+                                <td>@pet.Age</td>
+                                <td>@(pet.Weight?.ToString("F2") ?? "-") kg</td>
+                                <td>
+                                    @if (pet.HasChip)
+                                    {
+                                        <span class="badge bg-success"><i class="bi bi-check-circle"></i> Var</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary"><i class="bi bi-x-circle"></i> Yok</span>
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    <div class="action-buttons">
+                                        <a asp-action="Details" asp-route-id="@pet.Id" class="btn btn-sm btn-info" title="Detay">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@pet.Id" class="btn btn-sm btn-warning" title="Düzenle">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form method="post" asp-action="SoftDelete" asp-route-id="@pet.Id" style="display:inline;">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-secondary" title="Pasif Yap" onclick="return confirm('Bu evcil hayvanı pasif yapmak istediğinizden emin misiniz?');">
+                                                <i class="bi bi-pause-circle"></i>
+                                            </button>
+                                        </form>
+                                        <form method="post" asp-action="Delete" asp-route-id="@pet.Id" style="display:inline;">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-danger" title="Sil" onclick="return confirm('Bu evcil hayvanı kalıcı olarak silmek istediğinizden emin misiniz?');">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center py-5">
+                                <div class="empty-state">
+                                    <i class="bi bi-inbox"></i>
+                                    <p class="mt-3">Henüz evcil hayvan kaydı bulunmamaktadır.</p>
+                                    <a asp-action="Create" class="btn btn-primary">
+                                        <i class="bi bi-heart-fill"></i> İlk Evcil Hayvanı Ekle
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

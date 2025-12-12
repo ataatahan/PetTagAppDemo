@@ -12,8 +12,8 @@ using PetTag.Repo.Contexts;
 namespace PetTag.Repo.Migrations
 {
     [DbContext(typeof(PetTagAppDbContext))]
-    [Migration("20250930135854_v1.0")]
-    partial class v10
+    [Migration("20251212220437_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

@@ -1,0 +1,77 @@
+@model PetTag.Service.DTOs.VetAppointmentUpdateDto
+@{
+    ViewData["Title"] = "Randevu Düzenle";
+    var id = ViewContext.RouteData.Values["id"]?.ToString();
+    var pets = ViewBag.Pets as IList<PetTag.Service.DTOs.PetListItemDto> ?? new List<PetTag.Service.DTOs.PetListItemDto>();
+    var vets = ViewBag.Vets as IList<PetTag.Service.DTOs.VetListItemDto> ?? new List<PetTag.Service.DTOs.VetListItemDto>();
+}
+
+<div class="page-header">
+    <h1><i class="bi bi-pencil"></i> Randevu Düzenle</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form asp-action="Edit" method="post" asp-route-id="@id">
+                    @Html.AntiForgeryToken()
+                    
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="PetId" class="form-label">Evcil Hayvan</label>
+                            <select asp-for="PetId" class="form-select">
+                                <option value="">Seçiniz...</option>
+                                @foreach (var pet in pets)
+                                {
+                                    <option value="@pet.Id">@pet.Name (@pet.Type)</option>
+                                }
+                            </select>
+                            <span asp-validation-for="PetId" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="VetId" class="form-label">Veteriner</label>
+                            <select asp-for="VetId" class="form-select">
+                                <option value="">Seçiniz...</option>
+                                @foreach (var vet in vets)
+                                {
+                                    <option value="@vet.Id">@vet.FullName</option>
+                                }
+                            </select>
+                            <span asp-validation-for="VetId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="AppointmentDate" class="form-label">Randevu Tarihi ve Saati</label>
+                        <input asp-for="AppointmentDate" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Notes" class="form-label">Notlar</label>
+                        <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Notes" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Güncelle
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> İptal
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

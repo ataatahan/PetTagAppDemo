@@ -1,0 +1,106 @@
+@model PetTag.Service.DTOs.PetUpdateDto
+@{
+    ViewData["Title"] = "Evcil Hayvan Düzenle";
+    var id = ViewContext.RouteData.Values["id"]?.ToString();
+    var petOwners = ViewBag.PetOwners as IList<PetTag.Service.DTOs.PetOwnerListItemDto> ?? new List<PetTag.Service.DTOs.PetOwnerListItemDto>();
+    var vets = ViewBag.Vets as IList<PetTag.Service.DTOs.VetListItemDto> ?? new List<PetTag.Service.DTOs.VetListItemDto>();
+}
+
+<div class="page-header">
+    <h1><i class="bi bi-pencil"></i> Evcil Hayvan Düzenle</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form asp-action="Edit" method="post" asp-route-id="@id">
+                    @Html.AntiForgeryToken()
+                    
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <h5 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> Hata!</h5>
+                            <div asp-validation-summary="All" class="mb-0"></div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Name" class="form-label">İsim</label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Type" class="form-label">Tür</label>
+                            <select asp-for="Type" class="form-select">
+                                <option value="">Seçiniz...</option>
+                                @foreach (var type in Enum.GetValues(typeof(PetTag.Core.Enums.PetType)))
+                                {
+                                    <option value="@type">@type</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Type" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Age" class="form-label">Yaş</label>
+                            <input asp-for="Age" type="number" class="form-control" min="0" />
+                            <span asp-validation-for="Age" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Weight" class="form-label">Kilo (kg)</label>
+                            <input asp-for="Weight" type="number" step="0.01" class="form-control" min="0" />
+                            <span asp-validation-for="Weight" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="PetOwnerId" class="form-label">Pet Sahibi</label>
+                            <select asp-for="PetOwnerId" class="form-select">
+                                <option value="">Seçiniz...</option>
+                                @foreach (var owner in petOwners)
+                                {
+                                    <option value="@owner.Id">@owner.FullName</option>
+                                }
+                            </select>
+                            <span asp-validation-for="PetOwnerId" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="VetId" class="form-label">Veteriner</label>
+                            <select asp-for="VetId" class="form-select">
+                                <option value="">Seçiniz...</option>
+                                @foreach (var vet in vets)
+                                {
+                                    <option value="@vet.Id">@vet.FullName</option>
+                                }
+                            </select>
+                            <span asp-validation-for="VetId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Güncelle
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> İptal
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

@@ -26,7 +26,11 @@ namespace PetTag.Repo.Contexts
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=DESKTOP-NCN7N8Q;Initial Catalog=PetTagAppDb;Integrated Security=True;Encrypt=True;TrustServerCertificate=True;");
+            // Sadece options verilmediğinde çalışır (fallback)
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer("Data Source=Ata;Initial Catalog=PetTagAppDemo41;Integrated Security=True;TrustServerCertificate=True;");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

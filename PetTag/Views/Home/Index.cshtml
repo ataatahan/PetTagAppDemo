@@ -1,50 +1,238 @@
-﻿@{
-    ViewData["Title"] = "Pet Sahipleri";
+﻿@model PetTag.Controllers.DashboardViewModel
+@{
+    ViewData["Title"] = "Ana Sayfa";
 }
 
-<p>
-    <a class="btn btn-primary" asp-action="Create">Yeni Owner Ekle</a>
-</p>
+<div class="page-header">
+    <h1><i class="bi bi-speedometer2"></i> Dashboard</h1>
+    <p class="text-muted">PetTag Yönetim Sistemi - Genel Bakış</p>
+</div>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>İsim</th>
-            <th>Email</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var o in Model)
-    {
-        <tr>
-            <td>@o.Id</td>
-            <td>@o.FullName</td>
-            <td>@o.Email</td>
-            <td>
-                <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@o.Id">Detay</a>
-                <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@o.Id">Düzenle</a>
+<!-- İstatistik Kartları -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="stat-card">
+            <div class="stat-value">@Model.TotalPetOwners</div>
+            <div class="stat-label"><i class="bi bi-people"></i> Pet Sahibi</div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card">
+            <div class="stat-value">@Model.TotalPets</div>
+            <div class="stat-label"><i class="bi bi-heart"></i> Evcil Hayvan</div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card">
+            <div class="stat-value">@Model.TotalVets</div>
+            <div class="stat-label"><i class="bi bi-hospital"></i> Veteriner</div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card">
+            <div class="stat-value">@Model.TotalAppointments</div>
+            <div class="stat-label"><i class="bi bi-calendar-check"></i> Randevu</div>
+        </div>
+    </div>
+</div>
 
-                <form method="post" asp-action="Delete" asp-route-id="@o.Id" style="display:inline;">
-                    <input type="hidden" name="id" value="@o.Id" />
-                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Gerçekten silinsin mi?');">Sil</button>
-                    @Html.AntiForgeryToken()
-                </form>
+<!-- Ek İstatistikler -->
+<div class="row mb-4">
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-pie-chart"></i> Pet Türü Dağılımı</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.PetTypeDistribution != null && Model.PetTypeDistribution.Any())
+                {
+                    <div class="list-group list-group-flush">
+                        @foreach (var item in Model.PetTypeDistribution)
+                        {
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-circle-fill text-primary"></i> @item.Type</span>
+                                <span class="badge bg-primary rounded-pill">@item.Count</span>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">Henüz veri bulunmamaktadır.</p>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-shield-check"></i> Chip Durumu</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <div class="stat-value text-success">@Model.PetsWithChip</div>
+                        <div class="stat-label">Chip'li Pet</div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-value text-warning">@(Model.TotalPets - Model.PetsWithChip)</div>
+                        <div class="stat-label">Chip'siz Pet</div>
+                    </div>
+                </div>
+                @if (Model.TotalPets > 0)
+                {
+                    <div class="progress mt-3" style="height: 25px;">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: @((Model.PetsWithChip * 100.0 / Model.TotalPets).ToString("F1"))%">
+                            @((Model.PetsWithChip * 100.0 / Model.TotalPets).ToString("F1"))%
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
 
-                <form method="post" asp-action="SoftDelete" asp-route-id="@o.Id" style="display:inline;">
-                    <input type="hidden" name="id" value="@o.Id" />
-                    <button type="submit" class="btn btn-sm btn-secondary">Soft Delete</button>
-                    @Html.AntiForgeryToken()
-                </form>
+<!-- Hızlı Erişim -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-lightning-charge"></i> Hızlı Erişim</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-2">
+                        <a asp-controller="PetOwner" asp-action="Create" class="btn btn-primary w-100">
+                            <i class="bi bi-person-plus"></i> Yeni Pet Sahibi Ekle
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a asp-controller="Pet" asp-action="Create" class="btn btn-success w-100">
+                            <i class="bi bi-heart-fill"></i> Yeni Evcil Hayvan Ekle
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a asp-controller="Vet" asp-action="Create" class="btn btn-info w-100">
+                            <i class="bi bi-hospital"></i> Yeni Veteriner Ekle
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a asp-controller="VetAppointment" asp-action="Create" class="btn btn-warning w-100">
+                            <i class="bi bi-calendar-plus"></i> Yeni Randevu Ekle
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-                <form method="post" asp-action="UndoDelete" asp-route-id="@o.Id" style="display:inline;">
-                    <input type="hidden" name="id" value="@o.Id" />
-                    <button type="submit" class="btn btn-sm btn-success">Undo</button>
-                    @Html.AntiForgeryToken()
-                </form>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+<!-- Son Eklenenler -->
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-heart"></i> Son Eklenen Evcil Hayvanlar</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.RecentPets != null && Model.RecentPets.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover">
+                            <thead>
+                                <tr>
+                                    <th>İsim</th>
+                                    <th>Tür</th>
+                                    <th>Yaş</th>
+                                    <th class="text-end">İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var pet in Model.RecentPets)
+                                {
+                                    <tr>
+                                        <td><strong>@pet.Name</strong></td>
+                                        <td><span class="badge bg-info">@pet.Type</span></td>
+                                        <td>@pet.Age yaşında</td>
+                                        <td class="text-end">
+                                            <a asp-controller="Pet" asp-action="Details" asp-route-id="@pet.Id" class="btn btn-sm btn-outline-primary" title="Detay">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center mt-3">
+                        <a asp-controller="Pet" asp-action="Index" class="btn btn-sm btn-outline-primary">
+                            Tümünü Gör <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="bi bi-inbox"></i>
+                        <p>Henüz evcil hayvan kaydı bulunmamaktadır.</p>
+                        <a asp-controller="Pet" asp-action="Create" class="btn btn-primary">
+                            <i class="bi bi-heart-fill"></i> İlk Evcil Hayvanı Ekle
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-people"></i> Son Eklenen Pet Sahipleri</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.RecentOwners != null && Model.RecentOwners.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover">
+                            <thead>
+                                <tr>
+                                    <th>İsim</th>
+                                    <th>Email</th>
+                                    <th class="text-end">İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var owner in Model.RecentOwners)
+                                {
+                                    <tr>
+                                        <td><strong>@owner.FullName</strong></td>
+                                        <td>@owner.Email</td>
+                                        <td class="text-end">
+                                            <a asp-controller="PetOwner" asp-action="Details" asp-route-id="@owner.Id" class="btn btn-sm btn-outline-primary" title="Detay">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center mt-3">
+                        <a asp-controller="PetOwner" asp-action="Index" class="btn btn-sm btn-outline-primary">
+                            Tümünü Gör <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="bi bi-inbox"></i>
+                        <p>Henüz pet sahibi kaydı bulunmamaktadır.</p>
+                        <a asp-controller="PetOwner" asp-action="Create" class="btn btn-primary">
+                            <i class="bi bi-person-plus"></i> İlk Pet Sahibini Ekle
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

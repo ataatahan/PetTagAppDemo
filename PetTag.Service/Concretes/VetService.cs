@@ -37,8 +37,8 @@ namespace PetTag.Service.Concretes
                     
                 },
                 where: q == null
-                    ? null
-                    : v => v.FirstName.Contains(q) || v.LastName.Contains(q) || v.PhoneNumber.Contains(q),
+                    ? (System.Linq.Expressions.Expression<Func<PetTag.Core.Entities.Vet, bool>>?)(v => v.Status == PetTag.Core.Enums.EntityStatus.Active)
+                    : v => (v.FirstName.Contains(q) || v.LastName.Contains(q) || v.PhoneNumber.Contains(q)) && v.Status == PetTag.Core.Enums.EntityStatus.Active,
                 orderBy: qy => qy.OrderBy(v => v.FirstName),
                 include: null
             );
@@ -59,7 +59,7 @@ namespace PetTag.Service.Concretes
                     LastName = v.LastName,
                     PhoneNumber = v.PhoneNumber
                 },
-                where: v => v.Id == id,
+                where: v => v.Id == id && v.Status == PetTag.Core.Enums.EntityStatus.Active,
                 include: null
             );
         }
